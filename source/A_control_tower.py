@@ -24,3 +24,4 @@ while True:
     ''' alerts '''
     util.stretagy_alert(n01_01)
     util.stretagy_alert(n01_02)
+    time.sleep(86400)
