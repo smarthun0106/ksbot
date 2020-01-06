@@ -15,7 +15,7 @@ def data_download(timeframe, count, csv_path):
     for num, firm_code in enumerate(firm_code_list):
         try:
             print(num, firm_code, firm_name_list[num])
-            time.sleep(0.4)
+            time.sleep(1)
             try:
                 price_df = gp.get_all_features_data(firm_code, firm_name_list[num], timeframe, count)
             except requests.exceptions.Timeout:
