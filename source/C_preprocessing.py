@@ -1,6 +1,9 @@
 import pandas as pd
 import numpy as np
 import sub_source.firms_price_dataframe as gp
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
+pd.options.mode.chained_assignment = None
 
 def read_price_data(csv_path):
     df = pd.read_csv(csv_path, dtype={'code':str}, parse_dates=['date'])
@@ -8,6 +11,7 @@ def read_price_data(csv_path):
     df.drop(['code'], inplace=True, axis=1)
     return df
 
+''' N01 Stretagy Preprocessing '''
 def n01_preprocessing_01(df, firm_code, before_day, ma_list):
     df = df.loc[firm_code]
     before_day = before_day + 1
@@ -43,5 +47,59 @@ def n01_preprocessing_02(df, before_day, ma_list):
             preprocessed_df = p_df
         else:
             preprocessed_df = pd.concat([preprocessed_df, p_df])
-    preprocessed_df.to_csv('csv_file/preprocessed_csv_file.csv')
+    preprocessed_df.to_csv('csv_file/n01_preprocessed_csv_file.csv')
     return preprocessed_df
+
+''' N02 Stretagy Preprocessing '''
+def n02_preprocessing_01(df, firm_code, alpha):
+    df = df.loc[firm_code]
+    df.loc[:, 'av'] = df['close'].mean()
+    df['close-av'] = df['av'] - df['close']
+    find_low_price_df = df.sort_values(by=['close-av'], ascending=False)
+    df['low_result'] = find_low_price_df['close'].iloc[:alpha].mean()
+    df.loc[:, 'start_month'] = df['date'].dt.month
+    df = df.sort_values(by='start_month')
+    df.loc[:, 'candle'] = df['close'] / df['open']
+    return df
+
+def n02_preprocessing_02(df, alpha, month, candle, option):
+    firm_code_list = gp.crawling_firm_info()["종목코드"]
+    firm_code_list = firm_code_list.apply(gp.make_code)
+
+    result_df = pd.DataFrame(columns=['code', 'name'])
+    for num, firm_code in enumerate(firm_code_list):
+        n02_df = n02_preprocessing_01(df, firm_code, alpha)
+
+        if option == 1:
+            c1 = n02_df['start_month'] == month
+            c2 = n02_df['start_month'] == month + 1
+            n02_df = n02_df[c1 | c2]
+            c3 = n02_df['candle'] > candle
+            result_num = n02_df[c3].shape[0]
+            num = 8
+        elif option == 2:
+            c1 = n02_df['start_month'] == month
+            c2 = n02_df['candle'] > candle
+            result_num = n02_df[c1 & c2].shape[0]
+            num = 4
+
+        if result_num == num:
+            result_df = result_df.append({
+                'code' : firm_code,
+                'name' : n02_df['name'].iloc[0],
+                'low_result' : n02_df['low_result'].iloc[0],
+            }, ignore_index=True)
+    return result_df
+
+
+''' Test '''
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    df = read_price_data('csv_file/month_price_data.csv')
+    df = n02_preprocessing_02(df, alpha=10, month=3, candle=1.05, option=2)
+    print(df)
+    # plt.plot(df['date'], df['close'])
+    # plt.plot(df['date'], df['av'])
+    # plt.plot(df['date'], df['low_result'], label='low')
+    # plt.legend()
+    # plt.show()
