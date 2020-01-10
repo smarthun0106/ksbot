@@ -30,3 +30,7 @@ def data_download(timeframe, count, csv_path):
         except ValueError:
             pass
     total_price.to_csv(csv_path, index=False)
+
+if __name__ == "__main__":
+    csv_path =  'csv_file_test/day_price_data.csv'
+    data_download('day', 600, csv_path)

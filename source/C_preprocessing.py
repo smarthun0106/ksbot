@@ -36,7 +36,7 @@ def n01_preprocessing_01(df, firm_code, before_day, ma_list):
         df.loc[:, 'dcm'+'-ma'+ str(ma)] = df['close'] / df[ma_name]
         df['dcm'+'-ma'+ str(ma)] = np.around(df['dcm'+'-ma'+ str(ma)], decimals=4)
 
-    return df[-1:]
+    return df
 
 def n01_preprocessing_02(df, before_day, ma_list):
     firm_code_list = gp.crawling_firm_info()["종목코드"]
@@ -95,9 +95,20 @@ def n02_preprocessing_02(df, alpha, month, candle, option):
 ''' Test '''
 if __name__ == "__main__":
     import matplotlib.pyplot as plt
+    # # N01 test
+    # before_day = 3
+    # ma_list = [5, 20]
+    # df = read_price_data('csv_file/day_price_data.csv')
+    # df = n01_preprocessing_01(df, '005930', before_day, ma_list)
+    # print(df[['candle', 'candle-1', 'candle-2']])
+
+
+    # N02 test
     df = read_price_data('csv_file/month_price_data.csv')
     df = n02_preprocessing_02(df, alpha=10, month=3, candle=1.05, option=2)
     print(df)
+
+
     # plt.plot(df['date'], df['close'])
     # plt.plot(df['date'], df['av'])
     # plt.plot(df['date'], df['low_result'], label='low')

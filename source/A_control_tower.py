@@ -6,20 +6,21 @@ import pandas as pd
 import time
 pd.options.mode.chained_assignment = None
 
-csv_path =  'csv_file/day_price_data.csv'
+csv_path_1 =  'csv_file/day_price_data.csv'
+csv_path_2 = 'csv_file/n01_preprocessed_csv_file.csv'
 while True:
     ''' Crawling data and read original price data '''
-    data_download('day', 100, csv_path)
+    data_download('day', 100, csv_path_1)
 
     ''' N01 '''
     # Preprocessing
     before_day = 3
     ma_list = [5, 20]
-    df = pre.read_price_data(csv_path)
+    df = pre.read_price_data(csv_path_1)
     df = pre.n01_preprocessing_02(df, before_day, ma_list)
 
     # Strategy
-    df = str.read_preprocessed_csv_file()
+    df = str.read_preprocessed_csv_file(csv_path_2)
     n01_01 = str.n01_01_strategy(df)
     n01_02 = str.n01_02_strategy(df)
 
