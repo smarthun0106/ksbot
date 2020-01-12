@@ -1,6 +1,10 @@
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+import get_firms_price_dataframe as gp
+
 import pandas as pd
 import numpy as np
-import sub_source.firms_price_dataframe as gp
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 pd.options.mode.chained_assignment = None
@@ -35,8 +39,8 @@ def n01_preprocessing_01(df, firm_code, before_day, ma_list):
         df.loc[:, ma_name] = df['close'].rolling(ma).mean()
         df.loc[:, 'dcm'+'-ma'+ str(ma)] = df['close'] / df[ma_name]
         df['dcm'+'-ma'+ str(ma)] = np.around(df['dcm'+'-ma'+ str(ma)], decimals=4)
-
-    return df
+    df.dropna(inplace=True)
+    return df.iloc[-1:]
 
 def n01_preprocessing_02(df, before_day, ma_list):
     firm_code_list = gp.crawling_firm_info()["종목코드"]
@@ -47,6 +51,7 @@ def n01_preprocessing_02(df, before_day, ma_list):
             preprocessed_df = p_df
         else:
             preprocessed_df = pd.concat([preprocessed_df, p_df])
+        print('{0}/{1} {2} 완료'.format(num, len(firm_code_list), firm_code))
     preprocessed_df.to_csv('csv_file/n01_preprocessed_csv_file.csv')
     return preprocessed_df
 

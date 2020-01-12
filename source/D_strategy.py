@@ -7,12 +7,12 @@ def read_preprocessed_csv_file(csv_path):
     return df
 
 def n01_01_strategy(df):
-    c0 = df['close'] > 1000
-    c1 = df['volume-1'] > 10000000
-    c2 = df['volume'] < df['volume-1'] * 0.5
-    c3 = df['candle-1'] > 1.04
+    c0 = df['close'] > 0
+    c1 = df['volume-1'] > 9000000
+    c2 = df['volume'] < df['volume-1'] * 0.6
+    c3 = (df['candle-1'] > 1.01) & (df['candle-1'] < 1.30)
     c4 = df['candle'] < 0.98
-    c5 = df['dcm-ma5'] < 1.02
+    c5 = (df['dcm-ma5'] > 0.98)  & (df['dcm-ma5'] < 1.00)
 
     df = df[c0 & c1 & c2 & c3 & c4 & c5]
     columns = ['name', 'date', 'candle', 'dcm-ma5']

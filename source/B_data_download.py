@@ -1,10 +1,15 @@
-import sub_source.firms_price_dataframe as gp
+import sys
+from os import path
+sys.path.append(path.dirname(path.dirname(path.abspath(__file__))))
+
+import get_firms_price_dataframe as gp
 import pandas as pd
 import numpy as np
 import time
 import requests
 pd.set_option('display.unicode.east_asian_width', True)
 pd.options.mode.chained_assignment = None
+
 
 def data_download(timeframe, count, csv_path):
     firm_code_list = gp.crawling_firm_info()["종목코드"]
