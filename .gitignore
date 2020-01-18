@@ -5,3 +5,5 @@ BackTesting/
 source/csv_file/day_price_data.csv
 source/csv_file/month_price_data.csv
 source/csv_file/n01_preprocessed_csv_file.csv
+source/csv_file/n01_pre_all.csv
+

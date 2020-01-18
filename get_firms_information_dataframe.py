@@ -155,4 +155,4 @@ firm_info = make_firm_codes_clear()
 for i in range(2, 4):
     firm_codes_list = firm_info.index ; option = i
     firm_f = get_all_firms_data(firm_codes_list, option)
-    total_df = merge_two_dataframe(firm_info, firm_f, "firm_data" + "-" + str(option) + ".csv" )
+    total_df = merge_two_dataframe(firm_info, firm_f, "firm_sheets" + "-" + str(option) + ".csv" )
