@@ -51,4 +51,6 @@ if __name__ == "__main__":
         day = now.weekday()
         hour = int(now.strftime('%H'))
         if hour >= 9 and hour <= 16 and day <= 5:
-            stop_loss.monitoring_all(firm_codes, firm_names, start_prices, stop_ratios, flags)
+            stop_loss.monitoring_all(firm_codes, firm_names,
+                                     start_prices, stop_ratios,
+                                     flags)

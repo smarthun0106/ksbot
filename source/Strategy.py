@@ -11,6 +11,12 @@ class PreprocessingTools:
     def __init__(self):
         pass
 
+    def firm_codes(self):
+        price_data = PriceData()
+        firm_codes = price_data.crawling_firm_info()['종목코드']
+        firm_codes = firm_codes.apply(price_data.make_code)
+        return firm_codes
+
     def read_csv(self, csv_path):
         df = pd.read_csv(csv_path, dtype={'code':str}, parse_dates=['date'])
         df.index = df['code']
@@ -38,8 +44,12 @@ class PreprocessingTools:
         df.dropna(inplace=True)
         return df
 
-    def ratio(self, df, ratio_name, first_feature, second_feature):
-        df.loc[:, ratio_name] = df[first_feature] / df[second_feature]
+    def ratio_close_ma(self, df, ratio_name, ma):
+        df.loc[:, ratio_name] = df['close'] / df[ma]
+        return df
+
+    def ratio_candle(self, df):
+        df.loc[:, 'candle'] = df['close'] / df['open']
         return df
 
     def time_splite(self, df):
@@ -47,6 +57,22 @@ class PreprocessingTools:
         df.loc[:, 'month'] = df['date'].dt.month
         df.loc[:, 'day'] = df['date'].dt.day
         return df
+
+    def pre_all(self, df, pre_method):
+        firm_codes = self.firm_codes()
+        for num, firm_code in enumerate(firm_codes):
+            try:
+                one_firm_df = pre_method(df, firm_code)
+                if num == 0:
+                    all_firms_df = one_firm_df
+                else:
+                    all_firms_df = pd.concat([all_firms_df, one_firm_df])
+                print('{0}/{1} {2} 완료'.format(num, len(firm_codes), firm_code))
+            except KeyError:
+                pass
+        return all_firms_df
+
+
 
 class StrategyPreprocessing:
     def __init__(self):
@@ -92,11 +118,11 @@ class Strategies:
     def n01_01(self, csv_path):
         df = self.pre.read_csv(csv_path)
         c0 = df['close'] > 0
-        c1 = df['volume-1'] > 9000000
-        c2 = df['volume'] < df['volume-1'] * 0.6
-        c3 = (df['candle-1'] > 1.01) & (df['candle-1'] < 1.30)
+        c1 = df['volume-1'] > 10000000
+        c2 = df['volume'] < df['volume-1'] * 0.40
+        c3 = (df['candle-1'] > 1.02) & (df['candle-1'] < 1.30)
         c4 = df['candle'] < 0.98
-        c5 = (df['close/ma5'] > 0.96)  & (df['close/ma5'] < 1.01)
+        c5 = (df['close/ma5'] > 0.97)  & (df['close/ma5'] < 1.00)
         df = df[c0 & c1 & c2 & c3 & c4 & c5]
         return df
 
