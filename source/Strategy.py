@@ -56,6 +56,9 @@ class PreprocessingTools:
         df.loc[:, 'year'] = df['date'].dt.year
         df.loc[:, 'month'] = df['date'].dt.month
         df.loc[:, 'day'] = df['date'].dt.day
+        df.loc[:, 'hour'] = df['date'].dt.hour
+        df.loc[:, 'minute'] = df['date'].dt.minute
+        df.loc[:, 'second'] = df['date'].dt.second
         return df
 
     def pre_all(self, df, pre_method):
@@ -69,6 +72,8 @@ class PreprocessingTools:
                     all_firms_df = pd.concat([all_firms_df, one_firm_df])
                 print('{0}/{1} {2} 완료'.format(num, len(firm_codes), firm_code))
             except KeyError:
+                pass
+            except AttributeError:
                 pass
         return all_firms_df
 
@@ -85,8 +90,8 @@ class StrategyPreprocessing:
         pre = self.pre
         df = df.loc[firm_code]
         df = pre.moving_average(df, 'close', [5])
-        df = pre.ratio(df, 'candle', 'close', 'open')
-        df = pre.ratio(df, 'close/ma5', 'close', 'ma5')
+        df = pre.ratio_candle(df)
+        df = pre.ratio_close_ma(df, 'close/ma5', 'ma5')
         df = pre.shift_data(df, ['volume', 'candle'], 3, 'before')
         return df.iloc[-1:]
 
@@ -102,8 +107,9 @@ class StrategyPreprocessing:
                 else:
                     all_firms_df = pd.concat([all_firms_df, one_firm_df])
                 print('{0}/{1} {2} 완료'.format(num, len(firm_codes), firm_code))
-
             except KeyError:
+                pass
+            except AttributeError:
                 pass
 
         func_name = inspect.currentframe().f_code.co_name
@@ -115,14 +121,19 @@ class Strategies:
     def __init__(self):
         self.pre = PreprocessingTools()
 
+    '''
+    n01_02_result_2020-01-21_20_56_56
+    cp	         bv	bv_rate	  min_bc	max_bc	ac1	   ac2	cm	       min_cm_rate	max_cm_rate	invest_day	firm_number	  win_rate	ror	            test_code
+    1000	9000000	    0.6	    1.01	   1.3	0.99   1.0	close/ma5-1       0.97	      1.005	         5	        216	     0.731	7039	n01_02strategy476
+    '''
     def n01_01(self, csv_path):
         df = self.pre.read_csv(csv_path)
-        c0 = df['close'] > 0
-        c1 = df['volume-1'] > 10000000
-        c2 = df['volume'] < df['volume-1'] * 0.40
-        c3 = (df['candle-1'] > 1.02) & (df['candle-1'] < 1.30)
-        c4 = df['candle'] < 0.98
-        c5 = (df['close/ma5'] > 0.97)  & (df['close/ma5'] < 1.00)
+        c0 = df['close'] > 1000
+        c1 = df['volume-1'] > 9000000
+        c2 = df['volume'] < df['volume-1'] * 0.6
+        c3 = (df['candle-1'] > 1.01) & (df['candle-1'] < 1.30)
+        c4 = df['candle'] < 0.99
+        c5 = (df['close/ma5'] > 0.970)  & (df['close/ma5'] < 1.005)
         df = df[c0 & c1 & c2 & c3 & c4 & c5]
         return df
 

@@ -1,6 +1,7 @@
 import requests
 import inspect
 import random
+import datetime
 
 class Alert:
     def __init__(self):
@@ -21,7 +22,8 @@ class Alert:
         return r
 
     '''
-    Gets the name of var. Does it from the out most frame inner-wards.
+    Gets the name of var.
+    Does it from the out most frame inner-wards.
     :param var: variable to get name from.
     :return:
     '''
@@ -47,10 +49,31 @@ class Alert:
         text = 'Stop: ' + code + ' ' + name
         self.telegram_text(text)
 
+    def win_alert(self, df):
+        code = df.loc[0, 'code']
+        name = df.loc[0, 'name']
+        text = 'Win: ' + code + ' ' + name
+        self.telegram_text(text)
+
+class CountDay:
+    def __init__(self):
+        self.today = datetime.datetime.now()
+
+    def count(self, date):
+        year = int(self.today.strftime('%Y'))
+        month = int(date[:2])
+        day = int(date[3:5])
+        set_date = datetime.datetime(year, month, day)
+        today = datetime.datetime.now()
+        count_d = today - set_date
+        return count_d.days
+
+
 
 class Key:
 
 	def __init__(self, key=''):
+
 		if key == '':
 			self.key= self.generate()
 		else:
@@ -96,3 +119,8 @@ class Key:
 		if self.verify():
 			valid = 'Valid'
 		return self.key.upper() + ':' + valid
+
+if __name__ == "__main__":
+    count_day = CountDay()
+    day = count_day.count('01-20')
+    print(day)

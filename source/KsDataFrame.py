@@ -87,7 +87,7 @@ class PriceData:
         for num, firm_code in enumerate(firm_codes):
             try:
                 print(num, firm_code, firm_names[num])
-                time.sleep(1)
+                time.sleep(1.1)
                 try:
                     price_df = self.price_data_a(
                         firm_code, firm_names[num],
@@ -260,7 +260,7 @@ class FirmSheets:
         for option in range(2, 4):
             firm_sheets = self.get_all_firms_data(option)
             total_df = pd.merge(firm_sheets, firm_info, how="outer", left_index=True, right_index=True)
-            if csv is 'Y':
+            if csv == 'Y':
                 csv = "firm_sheets" + "-" + str(option) + ".csv"
                 total_df.to_csv(csv)
         return total_df
