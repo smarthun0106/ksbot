@@ -34,7 +34,7 @@ class StopLoss:
                                 close, win_price, win_ratio,
                                 close, stop_price, stop_ratio,
                                 count_day, firm_name))
-        print('--------------------------------------------------------------')
+        print('-'*95)
 
         if stop_price >= close:
             Alert().stop_alert(firms)
@@ -65,7 +65,9 @@ if __name__ == "__main__":
     firm_codes =   ['002360',  '037950', '083640', '215600']
     firm_names =   ['SH에너지화학', '엘컴텍', '인콘', '신라젠']
     start_prices = [1098, 1669, 1474, 15743]
-    win_ratios =   [1.014, 1.014, 1.020, 1.015]
+    win_expect_ratios = [1.015, 1.015, 1.015, 1.015]
+    close_loss_ratios = [-0.0073, -0.0088, 0.006, -0.006]
+    win_ratios = [a + b for a, b in zip(win_expect_ratios, close_loss_ratios)]
     stop_ratios =  [0.045, 0.045, 0.045, 0.045]
     flags = [0 for x in range(len(firm_codes))]
 

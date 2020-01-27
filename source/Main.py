@@ -16,7 +16,7 @@ def n01_run(mode):
         crawling_raw_data = CrawlingFirmPriceData('day',
                                                   100,
                                                   save_path=raw_data_path,
-                                                  time_sleep=0.4).run_a()
+                                                  time_sleep=1.0).run_a()
         return crawling_raw_data
 
     if mode == 1 or mode == 3:
