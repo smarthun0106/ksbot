@@ -59,7 +59,7 @@ class CountDay:
     def __init__(self):
         self.today = datetime.datetime.now()
 
-    def count(self, date):
+    def count_day(self, date):
         year = int(self.today.strftime('%Y'))
         month = int(date[:2])
         day = int(date[3:5])
@@ -68,10 +68,12 @@ class CountDay:
         count_d = today - set_date
         return count_d.days
 
+    def holiday(self):
+        pass
+
 
 
 class Key:
-
 	def __init__(self, key=''):
 
 		if key == '':

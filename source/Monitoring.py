@@ -26,7 +26,7 @@ class StopLoss:
         close = int(firms.loc[0, 'close'])
         stop_ratio = round(close / stop_price, 2)
         win_ratio = round(close / win_price, 2)
-        count_day = '+' + str(CountDay().count(buy_date))
+        count_day = '+' + str(CountDay().count_day(buy_date))
 
         print('{0} monitoring {1} win:{2}/{3}-{4}, stop:{5}/{6}-{7}, day:{8}, {9}'.format(
                                 num, firm_code,
@@ -40,7 +40,7 @@ class StopLoss:
             return flags
 
         if win_price <= close:
-            Alert().stop_alert(firms)
+            Alert().win_alert(firms)
             flags[num] = 1
             return flags
 
