@@ -1,15 +1,29 @@
-import os
 import time
 import datetime
 
-from KsDataFrame import PriceData
-from Strategy import StrategyPreprocessing, N01
-from Utils import Alert
+import settings
+from ks_price_data import CrawlingFirmPriceData
+from preprocessing import N01Pre
+# from Strategy import StrategyPreprocessing, N01
+# from Utils import Alert
 
 
 initial_money = 2940000
 turn_on = True
-while True:
+raw_data_path = 'csv_file/raw_day_price.csv'
+n01_pre_data_path = 'csv_file/n01_pre_price.csv'
+n01_back_test_path = 'BackTesting/csv_file_test/n01/n01_result_2020-01-23_21_14_44.csv'
+
+if __name__ == "__main__":
+    crawling_raw_data = CrawlingFirmPriceData('day',
+                                              100,
+                                              save_path=raw_data_path,
+                                              time_sleep=1.0).run_a()
+
+    n01_pre_data = N01Pre(raw_data_path, n01_pre_data_path).run()
+    # n01_strategy_firms =
+
+
     # time.sleep(1)
     # now = datetime.datetime.now()
     # day = now.weekday()
@@ -37,9 +51,6 @@ while True:
 
     day_price_path = 'csv_file/day_price_data.csv'
     n01_pre_all_path = 'csv_file/n01_pre_all.csv'
-
-    # crawling price data
-    PriceData().price_datas('day', 100, day_price_path)
 
     # preprocessing data
     StrategyPreprocessing().n01_pre_all(day_price_path)

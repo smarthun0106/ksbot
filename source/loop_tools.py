@@ -24,7 +24,6 @@ def concat_dataframe(func, time_sleep):
     firm_codes, firm_names = crawling_firm_info()
     for num, firm_code in enumerate(firm_codes):
         try:
-            print(num, firm_code, firm_names[num])
             time.sleep(time_sleep)
             try:
                 price_df = func(firm_code, firm_names[num])
@@ -35,6 +34,7 @@ def concat_dataframe(func, time_sleep):
                 total_price = price_df
             else:
                 total_price = pd.concat([total_price, price_df])
+            print(f" {num}/{len(firm_codes)} {firm_code} DONE ")
         except KeyError:
             pass
         except ValueError:
@@ -45,7 +45,6 @@ def merge_dataframe(func, time_sleep):
     firm_codes, firm_names = crawling_firm_info()
     for num, firm_code in enumerate(firm_codes):
         try:
-            print(num, firm_code, firm_names[num])
             time.sleep(time_sleep)
             try:
                 price_df = func(firm_code)
@@ -57,6 +56,7 @@ def merge_dataframe(func, time_sleep):
             else:
                 total_price = pd.merge(total_price, price_df, how="outer",
                                        right_index=True, left_index=True)
+            print(f'{num}/{len(firm_codes)} {firm_code} DONE')
         except KeyError:
             pass
         except ValueError:

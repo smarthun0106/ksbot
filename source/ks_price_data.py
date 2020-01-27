@@ -6,7 +6,7 @@ from loop_tools import concat_dataframe
 from loop_tools import merge_dataframe
 
 class CrawlingFirmPriceData(object):
-    def __init__(self, timeframe, count, save_path, mode='a', time_sleep=1):
+    def __init__(self, timeframe, count, save_path, time_sleep=1):
 
         if timeframe != 'day' and timeframe != 'week' and timeframe != 'month':
             raise TypeError(f'you must put "day" or "week" or "month"')
@@ -21,11 +21,6 @@ class CrawlingFirmPriceData(object):
         self.count = count
         self.save_path = save_path
         self.time_sleep = time_sleep
-
-        if mode == 'a':
-            self.run_a()
-        if mode == 'b':
-            self.run_b()
 
     def crawling_type_a(self, firm_code, firm_name):
         url = "https://fchart.stock.naver.com"
@@ -79,10 +74,12 @@ class CrawlingFirmPriceData(object):
     def run_a(self):
         total_price = concat_dataframe(self.crawling_type_a, self.time_sleep)
         total_price.to_csv(self.save_path)
+        return total_price
 
     def run_b(self):
         total_price = merge_dataframe(self.crawling_type_b, self.time_sleep)
         total_price.to_csv(self.save_path)
+        return total_price
 
 if __name__ == "__main__":
     save_path = 'abc.csv'
