@@ -70,9 +70,9 @@ class N01Pre:
         return df.iloc[-1:]
 
     def run(self):
-        reuslt_df = concat_dataframe(self.n01_pre_set, 0)
+        result_df = concat_dataframe(self.n01_pre_set, 0)
         result_df.to_csv(self.save_path)
-        return reuslt_df
+        return result_df
 
 if __name__ == "__main__":
     n01 = N01Pre('csv_file/day_price_data.csv').run()

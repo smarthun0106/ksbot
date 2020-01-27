@@ -34,7 +34,7 @@ def concat_dataframe(func, time_sleep):
                 total_price = price_df
             else:
                 total_price = pd.concat([total_price, price_df])
-            print(f" {num}/{len(firm_codes)} {firm_code} DONE ")
+            print(f"{num}/{len(firm_codes)-1} {firm_code} DONE")
         except KeyError:
             pass
         except ValueError:
@@ -56,7 +56,7 @@ def merge_dataframe(func, time_sleep):
             else:
                 total_price = pd.merge(total_price, price_df, how="outer",
                                        right_index=True, left_index=True)
-            print(f'{num}/{len(firm_codes)} {firm_code} DONE')
+            print(f"{num}/{len(firm_codes)-1} {firm_code} DONE")
         except KeyError:
             pass
         except ValueError:

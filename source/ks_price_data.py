@@ -6,7 +6,7 @@ from loop_tools import concat_dataframe
 from loop_tools import merge_dataframe
 
 class CrawlingFirmPriceData(object):
-    def __init__(self, timeframe, count, save_path, time_sleep=1):
+    def __init__(self, timeframe, count, save_path='abc.csv', time_sleep=1):
 
         if timeframe != 'day' and timeframe != 'week' and timeframe != 'month':
             raise TypeError(f'you must put "day" or "week" or "month"')
