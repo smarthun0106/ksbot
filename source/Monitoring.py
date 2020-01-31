@@ -72,6 +72,7 @@ if __name__ == "__main__":
     flags = [0 for x in range(len(firm_codes))]
 
     while True:
+        time.sleep(1.0)
         now = datetime.datetime.now()
         day = now.weekday()
         hour = int(now.strftime('%H'))

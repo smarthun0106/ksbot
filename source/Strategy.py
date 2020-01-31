@@ -17,7 +17,6 @@ class N01:
         pre_df.index = pre_df['code']
         pre_df.drop(['code'], inplace=True, axis=1)
         self.pre_df = pre_df
-
         self.ratio = ratio
 
     def back_df_pre(self):
@@ -26,7 +25,13 @@ class N01:
         return df
 
     def get_mean(self, df, firm_code):
-        df = df.loc[firm_code]
+        df = df[df.index == firm_code]
+        if df.shape[0] == 1:
+            df['gt_1.015_mean'] = df['gt_1.015']
+            df['gt_1.025_mean'] = df['gt_1.025']
+            df['gt_1.035_mean'] = df['gt_1.035']
+            df['gt_1.045_mean'] = df['gt_1.045']
+            return df
         df['gt_1.015_mean'] = df['gt_1.015'].mean()
         df['gt_1.025_mean'] = df['gt_1.025'].mean()
         df['gt_1.035_mean'] = df['gt_1.035'].mean()
@@ -55,27 +60,33 @@ class N01:
     def run(self):
         pre_df = self.pre_df
         back_df = self.back_df_pre()
+        result_df = pd.DataFrame()
         for index in range(back_df.shape[0]):
             one_condition = back_df.iloc[index]
             n01 = self.n01(pre_df, one_condition)
-            if index == 0:
+            if n01.empty:
+                pass
+            elif n01.empty == False and result_df.shape[0] < 1:
                 result_df = n01
             else:
                 result_df = pd.concat([result_df, n01])
 
         firm_codes = result_df.index.drop_duplicates(keep='first')
-        print(firm_codes)
-        for num, firm_code in enumerate(firm_codes):
-            result_df_firm = self.get_mean(result_df, firm_code)
-            if num == 0:
-                final_df = result_df_firm
-            else:
-                final_df = pd.concat([final_df, result_df_firm])
-        columns = [
-            'name', 'date', 'gt_1.015_mean',
-            'gt_1.025_mean', 'gt_1.035_mean', 'gt_1.045_mean'
-        ]
-        return final_df[columns]
+        if len(firm_codes) > 0:
+            for num, firm_code in enumerate(firm_codes):
+                result_df_firm = self.get_mean(result_df, firm_code)
+                # print(result_df_firm)
+                if num == 0:
+                    final_df = result_df_firm
+                else:
+                    final_df = pd.concat([final_df, result_df_firm])
+            columns = [
+                'name', 'date', 'gt_1.015_mean',
+                'gt_1.025_mean', 'gt_1.035_mean', 'gt_1.045_mean'
+            ]
+            return final_df[columns]
+        else:
+            return 'No Data'
 
 
 if __name__ == "__main__":

@@ -39,6 +39,8 @@ def concat_dataframe(func, time_sleep):
             pass
         except ValueError:
             pass
+        except AttributeError:
+            pass
     return total_price
 
 def merge_dataframe(func, time_sleep):
