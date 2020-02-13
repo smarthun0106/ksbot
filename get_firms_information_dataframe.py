@@ -2,8 +2,8 @@ import pandas as pd
 import requests
 import time
 
-''' Preprocessing Balance Sheet '''
 def make_fs_table_clear(df):
+    ''' Preprocessing Balance Sheet '''
     temp_df1 = df[0]
     temp_df1 = temp_df1.set_index(temp_df1.columns[0])
     temp_df1 = temp_df1[temp_df1.columns[:4]]
@@ -20,8 +20,8 @@ def make_fs_table_clear(df):
     fs_df = pd.concat([temp_df1, temp_df2, temp_df3])
     return fs_df
 
-''' Preprocessing Balance Sheet Ratio '''
 def make_fr_table_clear(df):
+    ''' Preprocessing Balance Sheet Ratio '''
     df = df[0]
     df = df.set_index(df.columns[0])
     df = df.loc[[
@@ -50,13 +50,13 @@ def make_invest_table_clear(df):
     df.index = ["PER", "PCR", "PSR", "PBR"]
     return df
 
-'''
-crawling data from https://comp.fnguide.com/
-Balance Sheet : 1, https://comp.fnguide.com/SVO2/ASP/SVD_Finance.asp?pGB=1&gicode=A002700&cID=&MenuYn=Y&ReportGB=&NewMenuID=103&stkGb=701
-Balance Sheet Ratio : 2, https://comp.fnguide.com/SVO2/ASP/SVD_FinanceRatio.asp?pGB=1&gicode=A002700&cID=&MenuYn=Y&ReportGB=&NewMenuID=104&stkGb=701
-Invetment Index : 3, https://comp.fnguide.com/SVO2/ASP/SVD_Invest.asp?pGB=1&gicode=A002700&cID=&MenuYn=Y&ReportGB=&NewMenuID=105&stkGb=701
-'''
 def make_crawling_dataframe(firm_code, option):
+    '''
+    crawling data from https://comp.fnguide.com/
+    Balance Sheet : 1, https://comp.fnguide.com/SVO2/ASP/SVD_Finance.asp?pGB=1&gicode=A002700&cID=&MenuYn=Y&ReportGB=&NewMenuID=103&stkGb=701
+    Balance Sheet Ratio : 2, https://comp.fnguide.com/SVO2/ASP/SVD_FinanceRatio.asp?pGB=1&gicode=A002700&cID=&MenuYn=Y&ReportGB=&NewMenuID=104&stkGb=701
+    Invetment Index : 3, https://comp.fnguide.com/SVO2/ASP/SVD_Invest.asp?pGB=1&gicode=A002700&cID=&MenuYn=Y&ReportGB=&NewMenuID=105&stkGb=701
+    '''
     pd.set_option('display.unicode.east_asian_width', True)
 
     if option == 1:
@@ -84,8 +84,9 @@ def make_crawling_dataframe(firm_code, option):
         fs_table = make_invest_table_clear(fs_table)
     return fs_table
 
-''' make dataframe more visiable '''
+
 def transform_data(firm_code, df):
+    ''' make dataframe more visiable '''
     for num, col in enumerate(df.columns):
         temp_df = pd.DataFrame({firm_code : df[col]})
         temp_df = temp_df.T
@@ -97,8 +98,9 @@ def transform_data(firm_code, df):
                                 left_index=True, right_index=True)
     return total_df
 
-''' get all firms data '''
+
 def get_all_firms_data(firm_codes_list, option):
+    ''' get all firms data '''
     for num, firm_code in enumerate(firm_codes_list):
         try:
             fsb_df = make_crawling_dataframe(firm_code, option)
@@ -118,8 +120,9 @@ def get_all_firms_data(firm_codes_list, option):
             pass
     return total_fs
 
-''' crawling firm codes and any information '''
+
 def crawling_firm_info():
+    ''' crawling firm codes and any information '''
     url = "http://kind.krx.co.kr"
     path = "/corpgeneral/corpList.do"
     parameters = {
@@ -130,8 +133,8 @@ def crawling_firm_info():
     df = pd.read_html(page.text, header=0)[0]
     return df
 
-''' convert firm code into Axxxxxx '''
 def make_code(x):
+    ''' convert firm code into Axxxxxx '''
     x = str(x)
     return 'A' + '0'* (6-len(x)) + x
 
@@ -143,8 +146,8 @@ def make_firm_codes_clear():
     df.columns = pd.MultiIndex.from_product([df.columns, ['']])
     return df
 
-''' merge firm balance sheet information and firm informations '''
 def merge_two_dataframe(firm_info, firm_f, csv=None):
+    ''' merge firm balance sheet information and firm informations '''
     total_df = pd.merge(firm_f, firm_info, how="outer", left_index=True, right_index=True)
     if csv:
         total_df.to_csv(csv)

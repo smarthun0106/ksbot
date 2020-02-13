@@ -61,14 +61,14 @@ class StopLoss:
 
 if __name__ == "__main__":
     stop_loss = StopLoss()
-    buy_dates =    ['01-23',   '01-23',   '01-23', '01-23']
-    firm_codes =   ['002360',  '037950', '083640', '215600']
-    firm_names =   ['SH에너지화학', '엘컴텍', '인콘', '신라젠']
-    start_prices = [1098, 1669, 1474, 15743]
-    win_expect_ratios = [1.015, 1.015, 1.015, 1.015]
-    close_loss_ratios = [-0.0073, -0.0088, 0.006, -0.006]
+    buy_dates =    ['02-11', '02-11']
+    firm_codes =   ['011000', '225430']
+    firm_names =   ['진원생명과학', '케이엠제약']
+    start_prices = [3126, 3128]
+    win_expect_ratios = [1.005, 1.01]
+    close_loss_ratios = [0, 0]
     win_ratios = [a + b for a, b in zip(win_expect_ratios, close_loss_ratios)]
-    stop_ratios =  [0.045, 0.045, 0.045, 0.045]
+    stop_ratios =  [0.05, 0.05]
     flags = [0 for x in range(len(firm_codes))]
 
     while True:
